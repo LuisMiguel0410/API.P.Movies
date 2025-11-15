@@ -38,7 +38,7 @@ namespace API.P.Movies.Services
 
         public async Task<ICollection<CategoryDto>> GetCategoriesAsync()
         {
-            var categories =  _categoryRepository.GetCategoriesAsync(); //Solo estoy llamando al metodo desde la capa Repository
+            var categories = await _categoryRepository.GetCategoriesAsync(); //Solo estoy llamando al metodo desde la capa Repository
 
             return _mapper.Map<ICollection<CategoryDto>>(categories); //Mapeo la lista de categorias a lista de CategoryDto, para no exponer mi modelo
 

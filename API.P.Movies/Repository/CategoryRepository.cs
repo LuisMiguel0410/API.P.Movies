@@ -51,10 +51,12 @@ namespace API.P.Movies.Repository
 
         public async Task<ICollection<Category>> GetCategoriesAsync()
         {
-            return await _context.Categories
-            .AsNoTracking()
-            .OrderBy(c => c.Name)  //Ascending order, para ordenar descending usar .OrderByDescending
-            .ToListAsync();
+            var categories = await _context.Categories
+                .AsNoTracking()
+                .OrderBy(c => c.Name)  //Ascending order, para ordenar descending usar .OrderByDescending
+                .ToListAsync();
+
+            return categories;
         }
 
         public async Task<Category> GetCategoryAsync(int id) // palabras claves async y el await
