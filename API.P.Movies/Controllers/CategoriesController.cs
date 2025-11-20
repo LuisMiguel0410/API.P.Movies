@@ -25,5 +25,21 @@ namespace API.P.Movies.Controllers
             var categories = await _categoryService.GetCategoriesAsync();
             return Ok(categories); // Ok significa que la respuesta fue exitosa, http status code 200
         }
+
+        [HttpGet("{id:int}", Name = "GetCategoryAsync")] // Este metodo siguien siendo un Get
+        //http status codes
+        [ProducesResponseType(StatusCodes.Status200OK)] //indica que el resultado esperado es un 200 OK
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // Informo al cliente que la categoria no fue encontrada
+
+        public async Task<ActionResult<CategoryDto>> GetCategoryAsync(int id)
+        {
+            var categoryDto = await _categoryService.GetCategoryAsync(id);
+            return Ok(categoryDto); // Ok significa que la respuesta fue exitosa, http status code 200
+        }
+
+        
+
     }
 }
