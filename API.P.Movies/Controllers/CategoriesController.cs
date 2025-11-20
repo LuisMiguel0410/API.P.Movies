@@ -16,14 +16,14 @@ namespace API.P.Movies.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetCategoriesAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)] //indica que el resultado esperado es un 200 OK
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)] 
         public async Task<ActionResult<ICollection<CategoryDto>>> GetCategoriesAsync()
         {
-            var categories = await _categoryService.GetCategoriesAsync();
-            return Ok(categories); // Ok significa que la respuesta fue exitosa, http status code 200
+            var categoriesDto = await _categoryService.GetCategoriesAsync();
+            return Ok(categoriesDto); // Ok significa que la respuesta fue exitosa, http status code 200
         }
 
         [HttpGet("{id:int}", Name = "GetCategoryAsync")] // Este metodo siguien siendo un Get
@@ -39,7 +39,39 @@ namespace API.P.Movies.Controllers
             return Ok(categoryDto); // Ok significa que la respuesta fue exitosa, http status code 200
         }
 
-        
+        [HttpPost(Name = "CreateCategoryAsync")] // Este metodo siguien siendo un Get
+        //http status codes
+        [ProducesResponseType(StatusCodes.Status200OK)] //indica que el resultado esperado es un 200 OK
+        [ProducesResponseType(StatusCodes.Status201Created)] //indica que el recurso fue creado exitosamente
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)] // Indica que hubo un conflicto a la hora de guardar el objeto en la base de datos
 
+        public async Task<ActionResult<CategoryDto>> CreateCategoryAsync([FromBody] CategoryCreateDto categoryCreateDto)
+        {   
+            if (!ModelState.IsValid) // ! significa que me esta negando la condicion
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var createdCategory = await _categoryService.CreateCategoryAsync(categoryCreateDto);
+                //vamos a retornar un 201 created con la ruta para obtener la categoria creada
+                return CreatedAtRoute(
+                    "GetCategoryAsync",                 //1mer parametro: nombre de la ruta
+                    new { id = createdCategory.Id },    //2do parametro: los valores de los parametros de la ruta
+                    createdCategory                     //3er parametro: el objeto creado
+                    );
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("Ya existe"))
+            {
+                return Conflict(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }                          
+        }
     }
 }
