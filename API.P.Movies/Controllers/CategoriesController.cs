@@ -104,5 +104,31 @@ namespace API.P.Movies.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
+        [HttpDelete("{id:int}", Name = "DeleteCategoryAsync")] // Este metodo siguien siendo un Get
+        //http status codes
+        [ProducesResponseType(StatusCodes.Status204NoContent)] //indica que el resultado es un 200 pero sin contenido
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)] 
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public async Task<ActionResult> DeleteCategoryAsync(int id)
+        {
+            try
+            {
+                var deletedCategory = await _categoryService.DeleteCategoryAsync(id);
+
+                return Ok(deletedCategory); // Ok significa que la respuesta fue exitosa, http status code 200
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("No se encontró"))
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
     }
 }
