@@ -15,3 +15,4 @@ namespace API.P.Movies.DAL.Models.Dtos
         public DateTime ModifiedDate { get; set; }
     }
 }
+    

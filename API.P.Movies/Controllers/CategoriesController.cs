@@ -20,13 +20,13 @@ namespace API.P.Movies.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] //indica que el resultado esperado es un 200 OK
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)] 
-        public async Task<ActionResult<ICollection<CategoryDto>>> GetCategoriesAsync()
+        public async Task<ActionResult<ICollection<CategoryDto>>> GetCategoriesAsync() 
         {
             var categoriesDto = await _categoryService.GetCategoriesAsync();
             return Ok(categoriesDto); // Ok significa que la respuesta fue exitosa, http status code 200
         }
 
-        [HttpGet("{id:int}", Name = "GetCategoryAsync")] // Este metodo siguien siendo un Get
+        [HttpGet("{id:int}", Name = "GetCategoryAsync")] // Este metodo sigue siendo un Get
         //http status codes
         [ProducesResponseType(StatusCodes.Status200OK)] //indica que el resultado esperado es un 200 OK
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
